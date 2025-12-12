@@ -6,190 +6,139 @@ const regexTexto = /^[A-Za-zÁÉÍÓÚáéíóúñÑ ]{2,40}$/;
 const regexUsuario = /^[A-Za-z0-9]{3,20}$/;
 const regexPassword = /^.{3,20}$/;
 
-let sesionActiva = false;
 
-document.addEventListener("DOMContentLoaded", () => {
-    const loginForm = document.getElementById("loginForm");
+var sesionActiva = false;
 
-    if (loginForm) {
-        loginForm.addEventListener("submit", e => {
-            e.preventDefault();
-
-            let u = document.getElementById("usuario").value;
-            let p = document.getElementById("password").value;
-
-            if (!regexUsuario.test(u)) {
-                document.getElementById("loginError").textContent = "Usuario inválido";
-                return;
-            }
-
-            if (!regexPassword.test(p)) {
-                document.getElementById("loginError").textContent = "Contraseña inválida";
-                return;
-            }
-
-            // login simulado
-            if (u === "admin" && p === "123") {
-                sesionActiva = true;
-                location.assign("registro.html");
-            } else {
-                document.getElementById("loginError").textContent = "Credenciales incorrectas";
-            }
-        });
-    }
-
-    cargarCatalogo();
-});
-
-
-let dueños = [];
-let mascotas = [];
-
-function registrar() {
-    let dn = document.getElementById("duenioNombre").value;
-    let dt = document.getElementById("duenioTel").value;
-    let dc = document.getElementById("duenioCorreo").value;
-
-    let mn = document.getElementById("mascotaNombre").value;
-    let me = document.getElementById("mascotaEspecie").value;
-    let mr = document.getElementById("mascotaRaza").value;
-
-    let msg = document.getElementById("registroMsg");
-
-
-    if (!regexNombre.test(dn)) {
-        msg.textContent = "Nombre de dueño inválido.";
-        return;
-    }
-
-    if (!regexTelefono.test(dt)) {
-        msg.textContent = "Teléfono inválido (7-10 dígitos).";
-        return;
-    }
-
-    if (!regexCorreo.test(dc)) {
-        msg.textContent = "Correo inválido.";
-        return;
-    }
-
-    
-    if (!regexTexto.test(mn)) {
-        msg.textContent = "Nombre de mascota inválido.";
-        return;
-    }
-
-    if (!regexTexto.test(me)) {
-        msg.textContent = "Especie inválida.";
-        return;
-    }
-
-    if (!regexTexto.test(mr)) {
-        msg.textContent = "Raza inválida.";
-        return;
-    }
-
-    
-    dueños.push([dn, dt, dc]);
-    mascotas.push([mn, me, mr]);
-
-    msg.textContent = "Registro guardado correctamente.";
-}
-
-let agenda = [];
-
-function agendar() {
-    let fecha = document.getElementById("fecha").value;
-    let hora = document.getElementById("hora").value;
-    let masc = document.getElementById("mascotaAgenda").value;
-    let serv = document.getElementById("servicio").value;
-
-    let msg = document.getElementById("agendaMsg");
-
-    if (!fecha) {
-        msg.textContent = "Debe seleccionar una fecha.";
-        return;
-    }
-
-    if (!hora) {
-        msg.textContent = "Debe seleccionar una hora.";
-        return;
-    }
-
-    if (!regexTexto.test(masc)) {
-        msg.textContent = "Nombre de mascota inválido.";
-        return;
-    }
-
-    agenda.push([fecha, hora, masc, serv]);
-
-    msg.textContent = "Servicio agendado correctamente.";
-}
-
-
-let catalogo = [
-    ["Baño", 30],
-    ["Corte de Pelo", 40],
-    ["Shampoo", 25],
-    ["Juguete", 15]
+var dueños = [];
+var mascotas = [];
+var agenda = [];
+var catalogo = [
+    {nombre:"Baño", precio:30},
+    {nombre:"Corte de Pelo", precio:40},
+    {nombre:"Shampoo", precio:25},
+    {nombre:"Juguete", precio:15}
 ];
+var carrito = [];
 
-let carrito = [];
+
+function login() {
+    var u = document.getElementById("usuario").value;
+    var p = document.getElementById("password").value;
+    var msg = document.getElementById("loginError");
+
+    if (!regexUsuario.test(u)) { msg.innerHTML = "Usuario inválido"; return false; }
+    if (!regexPassword.test(p)) { msg.innerHTML = "Contraseña inválida"; return false; }
+
+    if (u === "admin" && p === "123") {
+        sesionActiva = true;
+        window.location = "registro.html";
+    } else {
+        msg.innerHTML = "Credenciales incorrectas";
+    }
+
+    return false; // evita recargar la página
+}
+
+// REGISTRO
+function registrar() {
+    var dn = document.getElementById("duenioNombre").value;
+    var dt = document.getElementById("duenioTel").value;
+    var dc = document.getElementById("duenioCorreo").value;
+
+    var mn = document.getElementById("mascotaNombre").value;
+    var me = document.getElementById("mascotaEspecie").value;
+    var mr = document.getElementById("mascotaRaza").value;
+
+    var msg = document.getElementById("registroMsg");
+
+    if (!regexNombre.test(dn)) { msg.innerHTML = "Nombre de dueño inválido."; return false; }
+    if (!regexTelefono.test(dt)) { msg.innerHTML = "Teléfono inválido (7-10 dígitos)."; return false; }
+    if (!regexCorreo.test(dc)) { msg.innerHTML = "Correo inválido."; return false; }
+    if (!regexTexto.test(mn)) { msg.innerHTML = "Nombre de mascota inválido."; return false; }
+    if (!regexTexto.test(me)) { msg.innerHTML = "Especie inválida."; return false; }
+    if (!regexTexto.test(mr)) { msg.innerHTML = "Raza inválida."; return false; }
+
+    // Guardar en vectores/objetos
+    dueños[dueños.length] = {nombre: dn, telefono: dt, correo: dc};
+    mascotas[mascotas.length] = {nombre: mn, especie: me, raza: mr};
+
+    msg.innerHTML = "Registro guardado correctamente.";
+    return false;
+}
+
+// AGENDA
+function agendar() {
+    var fecha = document.getElementById("fecha").value;
+    var hora = document.getElementById("hora").value;
+    var masc = document.getElementById("mascotaAgenda").value;
+    var serv = document.getElementById("servicio").value;
+
+    var msg = document.getElementById("agendaMsg");
+
+    if (!fecha) { msg.innerHTML = "Debe seleccionar una fecha."; return false; }
+    if (!hora) { msg.innerHTML = "Debe seleccionar una hora."; return false; }
+    if (!regexTexto.test(masc)) { msg.innerHTML = "Nombre de mascota inválido."; return false; }
+
+    agenda[agenda.length] = {fecha: fecha, hora: hora, mascota: masc, servicio: serv};
+
+    msg.innerHTML = "Servicio agendado correctamente.";
+    return false;
+}
+
 
 function cargarCatalogo() {
-    let cont = document.getElementById("catalogo");
+    var cont = document.getElementById("catalogo");
     if (!cont) return;
 
-    cont.innerHTML = "";
-
-    for (let i = 0; i < catalogo.length; i++) {
-        let item = document.createElement("div");
-        item.innerHTML = `
-            <p>${catalogo[i][0]} - ${catalogo[i][1]} Bs</p>
-            <button onclick="comprar(${i})">Comprar</button>
-            <hr>
-        `;
-        cont.appendChild(item);
+    var html = "";
+    for (var i = 0; i < catalogo.length; i++) {
+        html += "<div>" +
+                    "<p>" + catalogo[i].nombre + " - " + catalogo[i].precio + " Bs</p>" +
+                    "<button onclick='comprar(" + i + ")'>Comprar</button>" +
+                 "<hr></div>";
     }
+    cont.innerHTML = html;
 }
 
+
+function limpiarCatalogo() {
+    var cont = document.getElementById("catalogo");
+    if (!cont) return;
+    cont.innerHTML = "";
+}
+
+
 function comprar(i) {
-
-    carrito.push({ 
-        nombre: catalogo[i][0], 
-        precio: catalogo[i][1], 
-        subtotal: catalogo[i][1]  
-    });
-
+    carrito[carrito.length] = {nombre: catalogo[i].nombre, precio: catalogo[i].precio, subtotal: catalogo[i].precio};
     mostrarCarrito();
 }
 
+
 function mostrarCarrito() {
-    let lista = document.getElementById("carritoLista");
-    let total = document.getElementById("total");
+    var lista = document.getElementById("carritoLista");
+    var total = document.getElementById("total");
 
-    lista.innerHTML = "";
-    let suma = 0;
+    var html = "";
+    var suma = 0;
 
-    
-    for (let i = 0; i < carrito.length; i++) {
-        let item = carrito[i];
-
-        let li = document.createElement("li");
-        li.innerHTML = `
-            ${item.nombre} - Precio: ${item.precio} Bs  
-            <br> Subtotal: ${item.subtotal} Bs
-            <hr>
-        `;
-
-        lista.appendChild(li);
-        suma += item.subtotal;
+    for (var i = 0; i < carrito.length; i++) {
+        html += carrito[i].nombre + " - Precio: " + carrito[i].precio + " Bs<br>Subtotal: " + carrito[i].subtotal + " Bs<hr>";
+        suma += carrito[i].subtotal;
     }
 
-    total.textContent = "Total: " + suma + " Bs";
+    lista.innerHTML = html;
+    total.innerHTML = "Total: " + suma + " Bs";
 }
 
 
 function cerrarSesion() {
     sesionActiva = false;
-    location.assign("index.html");
+    window.location = "index.html";
 }
+
+
+window.onload = function() {
+    cargarCatalogo();
+    mostrarCarrito();
+}
+
