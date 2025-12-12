@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro</title>
+    <link rel="stylesheet" href="csspw/inicio.css">
+</head>
+<body>
+
+<nav>
+    <a href="registro.html">Registro</a>
+    <a href="agenda.html">Agenda</a>
+    <a href="carrito.html">Carrito</a>
+    <button onclick="cerrarSesion()">Cerrar Sesión</button>
+</nav>
+
+<div class="container">
+    <h2>Registro del Dueño</h2>
+
+    <input type="text" id="duenioNombre" placeholder="Nombre del dueño">
+    <input type="text" id="duenioTel" placeholder="Teléfono">
+    <input type="email" id="duenioCorreo" placeholder="Correo">
+
+    <h2>Registro de Mascota</h2>
+
+    <input type="text" id="mascotaNombre" placeholder="Nombre">
+    <input type="text" id="mascotaEspecie" placeholder="Especie">
+    <input type="text" id="mascotaRaza" placeholder="Raza">
+
+    <button onclick="registrar()">Registrar</button>
+
+    <p id="registroMsg"></p>
+</div>
+
+<script src="JavaScript/app.js"></script>
+</body>
+</html>

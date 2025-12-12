@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agenda</title>
+    <link rel="stylesheet" href="csspw/inicio.css">
+</head>
+<body>
+
+<nav>
+    <a href="registro.html">Registro</a>
+    <a href="agenda.html">Agenda</a>
+    <a href="carrito.html">Carrito</a>
+    <button onclick="cerrarSesion()">Cerrar Sesión</button>
+</nav>
+
+<div class="container">
+    <h2>Agendar Servicio</h2>
+
+    <input type="date" id="fecha">
+    <input type="time" id="hora">
+    <input type="text" id="mascotaAgenda" placeholder="Nombre de mascota">
+    <select id="servicio">
+        <option>Baño</option>
+        <option>Corte de pelo</option>
+        <option>Vacuna</option>
+    </select>
+
+    <button onclick="agendar()">Agendar</button>
+
+    <p id="agendaMsg"></p>
+</div>
+
+<script src="JavaScript/app.js"></script>
+</body>
+</html>
